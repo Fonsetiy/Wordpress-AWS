@@ -263,3 +263,242 @@ Etapa 4.1 -
 Clique em "Personalizar:
 
 <img width="1359" height="494" alt="image" src="https://github.com/user-attachments/assets/a53dc984-4a25-46ee-97df-773fe1357653" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Etapa 5 - Launch Template
+O Launch Template atua como um modelo pré-configurado que define todas as especificações técnicas para a criação de instâncias EC2. Ele serve como base para o Auto Scaling Group, garantindo que cada nova instância provisionada automaticamente possua a mesma configuração, software e scripts de inicialização.
+
+5.1 - Criação do Launch Template
+
+- Acesse o console da EC2:
+- No painel de navegação, clique em "Launch Templates"
+- Clique em "Create launch template"
+- Configurações Básicas:
+- Launch template name: wordpress-template
+- Template version description: Template para instâncias EC2 com WordPress configurado
+  - ✅ Provide guidance to help me set up a template that I can use with EC2 Auto Scaling
+- AMI (Amazon Machine Image):
+- Application and OS Images: Selecione "Ubuntu Server 24.04 LTS"
+- AMI ID: ami-0360c520857e313ff (64-bit x86)
+  - ✅ Qualificado para o nível gratuito
+
+Instance Type:
+- Instance type: t2.micro
+
+
+
+![5  III](https://github.com/user-attachments/assets/ddfa4bdd-ee48-4e2f-9dca-11e9fde9ce72)
+
+
+Key Pair:
+- Key pair name: Selecione um par de chaves existente ou crie novo
+
+Network Settings:
+- Subnet: Deixe em branco (será definido no Auto Scaling Group)
+- Firewall (security groups): Select existing security group
+- Security groups: Selecione SG-EC2-WordPress
+
+
+
+5.3 - User Data
+O script de User Data executa automaticamente na inicialização da instância, configurando todo o ambiente WordPress.
+- Na seção "Advanced details", expanda "User data", selecione a opção "File" e faça upload do arquivo de script ou cole o script diretamente no campo de texto.
+
+- ![5 1 USER DATA](https://github.com/user-attachments/assets/d3942138-5631-4776-bcd6-bcf576466b7a)
+
+
+5.4 - Validação e criação 
+Revisão Final:
+
+✅ Nome e descrição configurados
+
+✅ AMI Ubuntu selecionada
+
+✅ Instance type t2.micro
+
+✅ Security group SG-EC2-WordPress
+
+✅ Script de User Data inserido
+
+✅ Configurações de storage adequadas
+
+Criação do Template:
+
+- Clique em "Create launch template"
+- Validação Pós-Criação:
+- Acesse EC2 > Launch Templates
+- Verifique se wordpress-template está listado
+- Status deve ser "Available"
+
+Etapa 6 - Conceito e configuração do Application Load Balancer (ALB)
+O Application Load Balancer (ALB) atua como um distribuidor inteligente de tráfego que recebe as requisições HTTP/HTTPS dos usuários e as encaminha para as instâncias EC2 saudáveis do WordPress. Ele é essencial para garantir alta disponibilidade, escalabilidade e resiliência da aplicação.
+
+6.1 - criação do load balancer
+Acesse o console da EC2:
+- No painel de navegação, clique em "Load Balancers"
+- Clique em "Create Load Balancer"
+- Seleção do Tipo:
+  - Application Load Balancer
+  - Clique em "Create"
+
+
+![etapa 6 1 I](https://github.com/user-attachments/assets/3726101e-b3f8-4067-8ebf-e830bf7e4926)
+
+
+Configuração Básica:
+- Load balancer name: wordpress-alb
+- Scheme: Internet-facing (voltado para internet)
+- IP address type: IPv4
+
+
+![6 1 II](https://github.com/user-attachments/assets/58348508-3f45-4cf4-8341-dfd4c997c22b)
+
+
+- Configuração de Rede:
+  - VPC: Selecione wordpress-projeto-vpc
+  - Mappings: Selecione pelo menos 2 zonas de disponibilidade com subnets públicas:
+  - us-east-1a: wordpress-projeto-subnet-public1-us-east-1a
+  - us-east-1b: wordpress-projeto-subnet-public2-us-east-1b
+
+
+![6 III](https://github.com/user-attachments/assets/a46a2bdd-95c8-4125-b113-718c2f16d8f9)
+
+
+Configuração de Segurança:
+- Security groups: Selecione SG-LoadBalancer
+
+![6 1 iv](https://github.com/user-attachments/assets/5aad0816-9dc6-430d-9f77-410a11a9d9f3)
+
+- Verifique se permite tráfego HTTP na porta 80
+
+
+![6 1 V](https://github.com/user-attachments/assets/508e6322-f854-4305-8abe-a97fac9c9e4f)
+
+Etapa 6.3 - Target Group 
+
+Configuração do Target Group
+- Na seção "Listeners and routing":
+  - Protocol: HTTP
+  - Port: 80
+  - Clique em "Create target group"
+
+Configurações Básicas do Target Group:
+
+- Choose a target type: Instances
+
+![6 1 VI](https://github.com/user-attachments/assets/e40dd64e-0f02-46cd-b876-84f5fcde7a27)
+
+- Target group name: wordpress-target-group
+- Protocol: HTTP
+- Port: 80
+- VPC: Selecione wordpress-projeto-vpc
+
+
+![6 1 VII](https://github.com/user-attachments/assets/8ea30532-a055-4876-8624-1aaadf226a9d)
+
+
+Configurações Avançadas de Health Check:
+- Health check path: / (página inicial do WordPress)
+- Health check port: Traffic port
+- Healthy threshold: 2 (verificações consecutivas para considerar saudável)
+- Unhealthy threshold: 2 (verificações consecutivas para considerar não-saudável)
+- Timeout: 5 seconds
+- Interval: 30 seconds
+- Success codes: 200 (HTTP OK)
+
+
+![6 1 VIII](https://github.com/user-attachments/assets/ee0c0a73-55c7-4bde-bb35-d767a49fcd68)
+
+
+Registro de Destinos:
+- Não selecione nenhuma instância manualmente
+- O Auto Scaling Group registrará automaticamente as instâncias
+- Clique em "Create target group"
+
+Associação com o ALB:
+- Volte à tela do ALB e atualize a lista de target groups
+- Selecione o wordpress-target-group criado
+- Action: Forward to wordpress-target-group
+
+
+Etapa 7 - Auto Scaling Group
+O Auto Scaling Group atua como um sistema de gestão automática de capacidade para a aplicação WordPress. Sua principal função é garantir que o ambiente mantenha sempre a quantidade ideal de servidores em operação, ajustando-se dinamicamente às variações de tráfego e mantendo a resiliência frente a eventuais falhas.
+
+Etapa 7.1 - Criação do LG
+Acesse o console da EC2:
+- No painel de navegação, role até "Auto Scaling" e clique em "Auto Scaling Groups"
+- Clique em "Create Auto Scaling group"
+
+
+![ETAPA 7 I](https://github.com/user-attachments/assets/2e80747a-0b9f-4b21-a651-c7bd668ce693)
+
+
+- Configurações Básicas:
+- Auto Scaling group name: wordpress-asg
+- Launch template: Selecione wordpress-template
+- Version: Default (1)
+
+
+Configuração de Rede:
+- VPC: Selecione wordpress-projeto-vpc
+- Availability Zones and subnets: Selecione as subnets privadas em pelo menos 2 AZs:
+    - wordpress-projeto-subnet-private1-us-east-1a
+    - wordpress-projeto-subnet-private2-us-east-1b
+- Availability Zone rebalancing: Balanceamento de melhor esforço
+
+
+![ETAPA 7 II](https://github.com/user-attachments/assets/09636e42-09f1-4f87-8450-03669a2028d1)
+
+
+Configuração de Load Balancing:
+- Load balancing: Attach to an existing load balancer
+- Existing load balancer target groups: Selecione wordpress-target-group
+- Health checks: ELB health checks + EC2 health checks
+
+
+![7 IV](https://github.com/user-attachments/assets/2f1b0ee0-6846-44b3-a2ab-963f2a042b41)
+
+
+Configurações de Health Check:
+- Enable Elastic Load Balancing health check
+- Enable Amazon EBS health checks
+- Health check grace period: 300 seconds
+
+Definição de Capacidade Base
+- Capacity units: Instances
+- Desired capacity: 2 (quantidade ideal de instâncias em operação normal)
+- Minimum capacity: 2 (número mínimo de instâncias sempre ativas)
+- Maximum capacity: 4 (limite máximo de expansão)
+
+
+![7 V](https://github.com/user-attachments/assets/b985e5cc-f67f-4acd-8c41-727e37e251fa)
+
+
+Política de Escalabilidade Automática
+Para implementar um sistema de ajuste dinâmico de capacidade, configure uma política de target tracking:
+- Scaling policy type: Target tracking scaling policy
+- Metric type: Average CPU utilization
+- Target value: 70 (percentual de uso de CPU alvo)
+- Instance warm-up: 300 seconds (período de estabilização)
+- Selecione a opção "Enable group metrics collection within CloudWatch"
+
+Funcionamento da Política
+- Expansão: Se a utilização média de CPU exceder 70%, o ASG adiciona automaticamente novas instâncias
+- Contração: Se a utilização ficar consistentemente abaixo de 70%, o ASG remove instâncias ociosas
+- Estabilização: Novas instâncias aguardam 5 minutos antes de serem consideradas nas métricas
+
