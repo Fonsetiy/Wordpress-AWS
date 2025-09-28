@@ -22,30 +22,30 @@ A imagem abaixo representa a arquitetura principal do projeto WordPress na AWS, 
 
 
 ## 🛠️ Tecnologias Utilizadas
-![AWS](https://img.shields.io/badge/AWS-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white)
-![EC2](https://img.shields.io/badge/Amazon%20EC2-FF9900?style=for-the-badge&logo=amazonec2&logoColor=white)
-![RDS MySQL](https://img.shields.io/badge/Amazon%20RDS-527FFF?style=for-the-badge&logo=amazonrds&logoColor=white)
-![Auto Scaling](https://img.shields.io/badge/Auto%20Scaling-FF4F8B?style=for-the-badge&logo=amazonaws&logoColor=white)
-![Amazon EFS](https://img.shields.io/badge/Amazon%20EFS-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white)
-![WordPress](https://img.shields.io/badge/WordPress-21759B?style=for-the-badge&logo=wordpress&logoColor=white)
-![VS Code](https://img.shields.io/badge/VS%20Code-007ACC?style=for-the-badge&logo=visualstudiocode&logoColor=white)
-![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
-![Docker Compose](https://img.shields.io/badge/Docker%20Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white)
-![Bash](https://img.shields.io/badge/Shell_Bash-121011?style=for-the-badge&logo=gnubash&logoColor=white)
-![Load Balancer](https://img.shields.io/badge/Application%20Load%20Balancer-FF4F8B?style=for-the-badge&logo=amazonaws&logoColor=white)
-![Ubuntu 24.04](https://img.shields.io/badge/Ubuntu%2024.04-E95420?style=for-the-badge&logo=ubuntu&logoColor=white)
-![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)
-![Launch Template](https://img.shields.io/badge/Launch%20Template-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white)
-![Amazon VPC](https://img.shields.io/badge/Amazon%20VPC-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white)
+[![AWS](https://img.shields.io/badge/AWS-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white)](https://aws.amazon.com/)
+[![EC2](https://img.shields.io/badge/Amazon%20EC2-FF9900?style=for-the-badge&logo=amazonec2&logoColor=white)](https://aws.amazon.com/ec2/)
+[![RDS MySQL](https://img.shields.io/badge/Amazon%20RDS-527FFF?style=for-the-badge&logo=amazonrds&logoColor=white)](https://aws.amazon.com/rds/)
+[![Auto Scaling](https://img.shields.io/badge/Auto%20Scaling-FF4F8B?style=for-the-badge&logo=amazonaws&logoColor=white)](https://aws.amazon.com/autoscaling/)
+[![Amazon EFS](https://img.shields.io/badge/Amazon%20EFS-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white)](https://aws.amazon.com/efs/)
+[![WordPress](https://img.shields.io/badge/WordPress-21759B?style=for-the-badge&logo=wordpress&logoColor=white)](https://wordpress.org/)
+[![VS Code](https://img.shields.io/badge/VS%20Code-007ACC?style=for-the-badge&logo=visualstudiocode&logoColor=white)](https://code.visualstudio.com/)
+[![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
+[![Docker Compose](https://img.shields.io/badge/Docker%20Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://docs.docker.com/compose/)
+[![Bash](https://img.shields.io/badge/Shell_Bash-121011?style=for-the-badge&logo=gnubash&logoColor=white)](https://www.gnu.org/software/bash/)
+[![Load Balancer](https://img.shields.io/badge/Application%20Load%20Balancer-FF4F8B?style=for-the-badge&logo=amazonaws&logoColor=white)](https://aws.amazon.com/elasticloadbalancing/)
+[![Ubuntu 24.04](https://img.shields.io/badge/Ubuntu%2024.04-E95420?style=for-the-badge&logo=ubuntu&logoColor=white)](https://ubuntu.com/)
+[![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/)
+[![Launch Template](https://img.shields.io/badge/Launch%20Template-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white)](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-launch-templates.html)
+[![Amazon VPC](https://img.shields.io/badge/Amazon%20VPC-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white)](https://aws.amazon.com/vpc/)
 
 ## Etapas do Projeto
-1. Criar a rede (VPC, Subnets, Nat Gateway, IGW).
+1. Criação da rede (VPC, Subnets, Nat Gateway, IGW).
 2. Grupos de Segurança.
-3. Criar o Relational Database Service (RDS).
-4. Criar o Elastic File System (EFS).
+3. Criação o Relational Database Service (RDS).
+4. Criação o Elastic File System (EFS).
 5. Criação do Launch Template
-6. Criar o Application Load Balancer (ALB).
-7. Criar o Auto Scaling Group (ASG)
+6. Criação o Application Load Balancer (ALB).
+7. Criação o Auto Scaling Group (ASG)
 -------
 
 ### ▶️ Etapa 1 - Criando a rede (VPC, Subnets, Rotas, IGW e Nat)
@@ -112,7 +112,17 @@ Permite criar uma rede virtual isolada dentro da AWS, onde você define sub-rede
 - Tabela pública: deve ter uma rota para 0.0.0.0/0 apontando para o IGW.
 - Tabelas privadas: devem ter uma rota para 0.0.0.0/0 apontando para o NAT Gateway da respectiva AZ.
 
-![1 4 tabela de rrotas](https://github.com/user-attachments/assets/e75d992b-0a66-4d6a-bc75-7a63f5adc9cf)
+**Tabela de Rotas da Private 1a**
+
+![ROTA 1A](https://github.com/user-attachments/assets/81746690-ddd0-4e0b-8435-70699f364483)
+
+**Tabela de Rotas da Private 1b**
+
+![ROTA 1B](https://github.com/user-attachments/assets/7b928942-be0b-4958-9f29-15c56c1c8506)
+
+**Tabela de Rotas da Public**
+
+![ROTA PUBLIC](https://github.com/user-attachments/assets/8d3875b4-72f3-4206-b541-f4da646184a1)
 
 
 ### 🔹Etapa 1.5 - Validação do Nat Gateway 
@@ -123,6 +133,7 @@ Permite criar uma rede virtual isolada dentro da AWS, onde você define sub-rede
 - Confirme que cada um possui um Elastic IP associado e que o Estado é "Available".
 - Para validar os IPs elásticos, acesse VPC > Elastic IPs. Você deve visualizar dois IPs alocados e associados aos NAT Gateways.
 
+**NAT Gateway**
 ![1 5 nat gateway](https://github.com/user-attachments/assets/46faffb2-a99f-4339-b20d-c9c2e4346a25)
 
 --------
@@ -612,7 +623,28 @@ Para implementar um sistema de ajuste dinâmico de capacidade, configure uma pol
 ------
 
 ### ▶️ Etapa 8 - Testes
+Nesta etapa, validamos o funcionamento completo da infraestrutura implantada. O site WordPress foi acessado via Application Load Balancer (ALB), garantindo balanceamento de carga entre as instâncias EC2.
 
+### 🔹 Etapa 8.1
+No console da EC2, navegue até "Load Balancers"
+- Selecione o load balancer wordpress-alb
+- Na seção "Description", copie o DNS name:
+  ```wordpress-alb-xxxxxxxxx.us-east-1.elb.amazonaws.com```
+- Acesse o DNS em seu navegador web
+
+![8 1](https://github.com/user-attachments/assets/292557d9-6059-4c4a-a85b-5546a8d113b8)
+
+
+![8 1 II](https://github.com/user-attachments/assets/61637449-009a-4016-b318-035361c43db4)
+
+- Tela de Login do Wordpress:
+
+![8 1 III](https://github.com/user-attachments/assets/97531548-fc17-48bc-a9da-7483ba112e89)
+
+- Visual do site configurado:
+
+
+![8 1 IV](https://github.com/user-attachments/assets/798df30a-a39a-4023-be3b-21964193b394)
 
 
 ----
